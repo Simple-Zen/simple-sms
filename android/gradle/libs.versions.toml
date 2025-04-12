@@ -1,0 +1,33 @@
+[versions]
+coreKtx = "1.16.0"
+gradle = "4.0.2"
+gradleVersion = "8.4.1"
+kotlinGradlePlugin = "1.9.23"
+messaging = "1.0.0"
+agp = "8.3.2"
+compiler = "3.2.0-alpha11"
+databindingCompiler = "8.9.1"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+appcompat = "1.7.0"
+material = "1.12.0"
+
+[libraries]
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+gradle-v841 = { module = "com.android.tools.build:gradle", version.ref = "gradleVersion" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
+messaging = { group = "com.android.messaging", name = "Messaging" }
+androidx-compiler = { group = "androidx.databinding", name = "compiler", version.ref = "compiler" }
+androidx-databinding-compiler = { group = "androidx.databinding", name = "databinding-compiler", version.ref = "databindingCompiler" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+[plugins]
+messagingplugin = { id = "com.android.messaging" }
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+
