@@ -1,0 +1,9 @@
+[submodule "android/--force"]
+	path = android/--force
+	url = https://android.googlesource.com/platform/packages/apps/Messaging
+[submodule "android/Messaging"]
+	path = android/Messaging
+	url = https://android.googlesource.com/platform/packages/apps/Messaging
+[submodule "android/TelephonyProvider"]
+	path = android/TelephonyProvider
+	url = https://android.googlesource.com/platform/packages/providers/TelephonyProvider

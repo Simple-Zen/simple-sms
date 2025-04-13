@@ -50,8 +50,9 @@ android {
 }
 dependencies {
     implementation(libs.messaging)
-    implementation(project(":Messaging"))
     implementation(libs.androidx.core.ktx)
+    implementation(project(":Messaging"))
+    implementation(project(":TelephonyProvider"))
 }
 
 flutter {
