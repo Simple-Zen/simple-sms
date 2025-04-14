@@ -72,7 +72,7 @@ public class WidgetConversationService extends RemoteViewsService {
      */
     private static class WidgetConversationFactory extends BaseWidgetFactory {
         private ImageResource mImageResource;
-        private String mConversationId;
+        private final String mConversationId;
 
         public WidgetConversationFactory(Context context, Intent intent) {
             super(context, intent);
@@ -107,8 +107,9 @@ public class WidgetConversationService extends RemoteViewsService {
             }
             final Uri uri = MessagingContentProvider.buildConversationMessagesUri(mConversationId);
             if (uri != null) {
-                LogUtil.w(TAG, "doQuery uri: " + uri.toString());
+                LogUtil.w(TAG, "doQuery uri: " + uri);
             }
+            assert uri != null;
             return mContext.getContentResolver().query(uri,
                     ConversationMessageData.getProjection(),
                     null,       // where

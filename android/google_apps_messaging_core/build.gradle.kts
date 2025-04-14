@@ -43,7 +43,7 @@ android {
     }
 }
 dependencies {
-    implementation(project(":google_apps_messaging_core"))
+    implementation(project(":google_i18n_libphonenumber"))
 //    implementation(project(":TelephonyProvider"))
 
     implementation(libs.androidx.exifinterface)

@@ -16,6 +16,7 @@
 
 package android.support.v7.mms;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -25,6 +26,8 @@ import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.RequiresPermission;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -99,6 +102,7 @@ class Utils {
      * @param subId the SIM subId
      * @return a non-empty array with exactly two elements, first is mcc and last is mnc.
      */
+    @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
     static int[] getMccMnc(final Context context, final int subId) {
         final int[] mccMnc = new int[] { 0, 0 };
         if (Utils.supportMSim()) {
@@ -131,6 +135,7 @@ class Utils {
      * @param subId the SIM's subId
      * @return the sub-dependent Context
      */
+    @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
     static Context getSubDepContext(final Context context, final int subId) {
         if (!supportMSim()) {
             return context;

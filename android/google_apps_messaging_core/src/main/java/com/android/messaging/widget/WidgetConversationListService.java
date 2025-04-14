@@ -142,7 +142,7 @@ public class WidgetConversationListService extends RemoteViewsService {
                     includeAvatar = options.getInt(BugleWidgetProvider.WIDGET_SIZE_KEY) ==
                             BugleWidgetProvider.SIZE_LARGE;
                 } else {
-                    includeAvatar = true;;
+                    includeAvatar = true;
                 }
 
                 // Show the avatar when grande size, otherwise hide it.

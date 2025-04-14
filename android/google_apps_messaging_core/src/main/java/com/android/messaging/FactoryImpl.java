@@ -21,6 +21,8 @@ import android.os.Process;
 import android.telephony.SmsManager;
 import android.util.SparseArray;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.android.messaging.datamodel.DataModel;
 import com.android.messaging.datamodel.DataModelImpl;
 import com.android.messaging.datamodel.MemoryCacheManager;
@@ -58,7 +60,9 @@ class FactoryImpl extends Factory {
     private MemoryCacheManager mMemoryCacheManager;
     private MediaResourceManager mMediaResourceManager;
     private MediaCacheManager mMediaCacheManager;
-    private ContactContentObserver mContactContentObserver;
+    private
+    @VisibleForTesting
+    ContactContentObserver mContactContentObserver;
     private PhoneUtils mPhoneUtils;
     private MediaUtil mMediaUtil;
     private SparseArray<BugleSubscriptionPrefs> mSubscriptionPrefs;
@@ -74,6 +78,7 @@ class FactoryImpl extends Factory {
     private FactoryImpl() {
     }
 
+    @VisibleForTesting
     public static Factory register(final Context applicationContext,
             final BugleApplication application) {
         // This only gets called once (from BugleApplication.onCreate), but its not called in tests.
@@ -112,6 +117,7 @@ class FactoryImpl extends Factory {
     }
 
     @Override
+    @VisibleForTesting
     public void onRequiredPermissionsAcquired() {
         if (sInitialized) {
             return;
@@ -191,6 +197,7 @@ class FactoryImpl extends Factory {
     }
 
     @Override
+    @VisibleForTesting
     public ContactContentObserver getContactContentObserver() {
         return mContactContentObserver;
     }

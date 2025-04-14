@@ -38,6 +38,8 @@ import com.android.messaging.util.OsUtil;
 import com.android.messaging.util.SafeAsyncTask;
 import com.android.messaging.util.UiUtils;
 
+import java.util.Objects;
+
 public class WidgetConversationProvider extends BaseWidgetProvider {
     public static final String ACTION_NOTIFY_MESSAGES_CHANGED =
             "com.android.Bugle.intent.action.ACTION_NOTIFY_MESSAGES_CHANGED";
@@ -148,12 +150,7 @@ public class WidgetConversationProvider extends BaseWidgetProvider {
                 // widget dependent on ConversationListItemData. However, we have to update
                 // the widget regardless, even with those missing pieces. Here we update the
                 // widget again in the background.
-                SafeAsyncTask.executeOnThreadPool(new Runnable() {
-                    @Override
-                    public void run() {
-                        rebuildWidget(context, appWidgetId);
-                    }
-                });
+                SafeAsyncTask.executeOnThreadPool(() -> rebuildWidget(context, appWidgetId));
             }
         }
 
@@ -250,7 +247,7 @@ public class WidgetConversationProvider extends BaseWidgetProvider {
             // widgets looking at that conversation. When the conversation id is null, that means
             // there's been a massive change (such as the initial import) and we need to update
             // every conversation widget.
-            final String conversationId = intent.getExtras()
+            final String conversationId = Objects.requireNonNull(intent.getExtras())
                     .getString(UIIntents.UI_INTENT_EXTRA_CONVERSATION_ID);
 
             // Only update the widgets that match the conversation id that changed.

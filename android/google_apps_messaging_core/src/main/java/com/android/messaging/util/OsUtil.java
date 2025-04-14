@@ -17,6 +17,7 @@
 package com.android.messaging.util;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -186,7 +187,7 @@ public class OsUtil {
 
     /**
      * Check if the app has the specified permission. If it does not, the app needs to use
-     * {@link android.app.Activity#requestPermission}. Note that if it
+     * {android.app.Activity#requestPermission}. Note that if it
      * returns true, it cannot return false in the same process as the OS kills the process when
      * any permission is revoked.
      * @param permission A permission from {@link android.Manifest.permission}

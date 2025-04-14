@@ -62,7 +62,7 @@ public class WakeLockHelper {
         if (VERBOSE) {
             LogUtil.v(TAG, "acquiring " + mWakeLockId + " for opcode " + opcode);
         }
-        mWakeLock.acquire();
+        mWakeLock.acquire(10*60*1000L /*10 minutes*/);
         intent.putExtra(EXTRA_CALLING_PID, mMyPid);
     }
 

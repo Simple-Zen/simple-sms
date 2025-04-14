@@ -173,7 +173,7 @@ public class MmsService extends Service {
             if (sWakeLock == null) {
                 final PowerManager pm =
                         (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                sWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKELOCK_ID);
+                sWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MmsService:" + WAKELOCK_ID);
             }
             sWakeLock.acquire();
         }

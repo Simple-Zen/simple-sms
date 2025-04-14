@@ -64,7 +64,7 @@ public abstract class Factory {
     public abstract MemoryCacheManager getMemoryCacheManager();
     public abstract MediaResourceManager getMediaResourceManager();
     public abstract MediaCacheManager getMediaCacheManager();
-    public abstract ContactContentObserver getContactContentObserver();
+    @VisibleForTesting public abstract ContactContentObserver getContactContentObserver();
     public abstract PhoneUtils getPhoneUtils(int subId);
     public abstract MediaUtil getMediaUtil();
     public abstract BugleCarrierConfigValuesLoader getCarrierConfigValuesLoader();

@@ -16,6 +16,7 @@
 
 package com.android.messaging.util;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +34,7 @@ import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
+import androidx.annotation.RequiresPermission;
 import androidx.collection.ArrayMap;
 import androidx.core.os.BuildCompat;
 
@@ -317,6 +319,7 @@ public abstract class PhoneUtils {
             return mTelephonyManager.getSimOperator();
         }
 
+        @RequiresPermission(allOf = {Manifest.permission.READ_SMS, Manifest.permission.READ_PHONE_NUMBERS, Manifest.permission.READ_PHONE_STATE})
         @Override
         public String getSelfRawNumber(final boolean allowOverride) {
             if (allowOverride) {
@@ -369,6 +372,7 @@ public abstract class PhoneUtils {
             return ParticipantData.DEFAULT_SELF_SUB_ID;
         }
 
+        @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
         @Override
         @SuppressWarnings("deprecation")
         public boolean isDataRoamingEnabled() {
@@ -421,6 +425,7 @@ public abstract class PhoneUtils {
             mSubscriptionManager = SubscriptionManager.from(Factory.get().getApplicationContext());
         }
 
+        @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
         @Override
         public String getSimCountry() {
             final SubscriptionInfo subInfo = getActiveSubscriptionInfo();
@@ -439,6 +444,7 @@ public abstract class PhoneUtils {
             return mSubscriptionManager.getActiveSubscriptionInfoCountMax();
         }
 
+        @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
         @Override
         public String getCarrierName() {
             final SubscriptionInfo subInfo = getActiveSubscriptionInfo();
@@ -455,6 +461,7 @@ public abstract class PhoneUtils {
             return null;
         }
 
+        @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
         @Override
         public boolean hasSim() {
             return mSubscriptionManager.getActiveSubscriptionInfoCount() > 0;
@@ -465,6 +472,7 @@ public abstract class PhoneUtils {
             return mSubscriptionManager.isNetworkRoaming(mSubId);
         }
 
+        @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
         @Override
         public int[] getMccMnc() {
             int mcc = 0;
@@ -477,12 +485,14 @@ public abstract class PhoneUtils {
             return new int[]{mcc, mnc};
         }
 
+        @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
         @Override
         public String getSimOperatorNumeric() {
             // For L_MR1 we return the canonicalized (xxxxxx) string
             return getMccMncString(getMccMnc());
         }
 
+        @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
         @Override
         public String getSelfRawNumber(final boolean allowOverride) {
             if (allowOverride) {
@@ -504,6 +514,7 @@ public abstract class PhoneUtils {
             throw new IllegalStateException("No active subscription");
         }
 
+        @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
         @Override
         public SubscriptionInfo getActiveSubscriptionInfo() {
             try {
@@ -524,6 +535,7 @@ public abstract class PhoneUtils {
             return null;
         }
 
+        @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
         @Override
         public List<SubscriptionInfo> getActiveSubscriptionInfoList() {
             final List<SubscriptionInfo> subscriptionInfos =
@@ -568,17 +580,20 @@ public abstract class PhoneUtils {
             return getDefaultSmsSubscriptionId() != ParticipantData.DEFAULT_SELF_SUB_ID;
         }
 
+        @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
         @Override
         public int getActiveSubscriptionCount() {
             return mSubscriptionManager.getActiveSubscriptionInfoCount();
         }
 
+        @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
         @Override
         public int getEffectiveIncomingSubIdFromSystem(Intent intent, String extraName) {
             return getEffectiveIncomingSubIdFromSystem(intent.getIntExtra(extraName,
                     ParticipantData.DEFAULT_SELF_SUB_ID));
         }
 
+        @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
         private int getEffectiveIncomingSubIdFromSystem(int subId) {
             if (subId < 0) {
                 if (mSubscriptionManager.getActiveSubscriptionInfoCount() > 1) {
@@ -592,11 +607,13 @@ public abstract class PhoneUtils {
             return subId;
         }
 
+        @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
         @Override
         public int getSubIdFromTelephony(Cursor cursor, int subIdIndex) {
             return getEffectiveIncomingSubIdFromSystem(cursor.getInt(subIdIndex));
         }
 
+        @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
         @Override
         public boolean isDataRoamingEnabled() {
             final SubscriptionInfo subInfo = getActiveSubscriptionInfo();
@@ -626,6 +643,7 @@ public abstract class PhoneUtils {
 
         }
 
+        @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
         @Override
         public HashSet<String> getNormalizedSelfNumbers() {
             final HashSet<String> numbers = new HashSet<>();

@@ -60,7 +60,9 @@ plugins {
 include(":simple_sms")
 include(":google_apps_messaging_core")
 include(":google_provider_telephony_core")
+include(":google_i18n_libphonenumber")
 
 project(":simple_sms").projectDir = file("./simple_sms")
 project(":google_apps_messaging_core").projectDir = file("./google_apps_messaging_core")
 project(":google_provider_telephony_core").projectDir = file("./google_provider_telephony_core")
+project(":google_i18n_libphonenumber").projectDir = file("./google_i18n_libphonenumber")

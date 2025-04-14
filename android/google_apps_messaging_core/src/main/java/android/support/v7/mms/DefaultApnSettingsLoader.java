@@ -16,6 +16,7 @@
 
 package android.support.v7.mms;
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.Resources;
@@ -27,6 +28,8 @@ import android.provider.Telephony;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
+
+import androidx.annotation.RequiresPermission;
 
 import com.android.messaging.R;
 
@@ -240,6 +243,7 @@ class DefaultApnSettingsLoader implements ApnSettingsLoader {
         mApnsCache = new SparseArray<>();
     }
 
+    @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
     @Override
     public List<Apn> get(final String apnName) {
         final int subId = Utils.getEffectiveSubscriptionId(MmsManager.DEFAULT_SUB_ID);
@@ -260,6 +264,7 @@ class DefaultApnSettingsLoader implements ApnSettingsLoader {
         return apns;
     }
 
+    @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
     private void loadLocked(final int subId, final String apnName, final List<Apn> apns) {
         // Try system APN table first
         loadFromSystem(subId, apnName, apns);
@@ -391,6 +396,7 @@ class DefaultApnSettingsLoader implements ApnSettingsLoader {
      * @param apnName the APN name to match
      * @param apns the list for returning results
      */
+    @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
     private void loadFromResources(final int subId, final String apnName, final List<Apn> apns) {
         Log.i(MmsService.TAG, "Loading APNs from resources, apnName=" + apnName);
         final int[] mccMnc = Utils.getMccMnc(mContext, subId);
