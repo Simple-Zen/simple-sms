@@ -1,4 +1,4 @@
-package com.simplezen.unify_messages_plus.src.queries
+package io.simplezen.simple_sms.queries
 
 import android.content.Context
 import android.database.Cursor

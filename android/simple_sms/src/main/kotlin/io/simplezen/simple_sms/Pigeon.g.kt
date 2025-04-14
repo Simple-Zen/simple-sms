@@ -2,7 +2,7 @@
 // See also: https://pub.dev/packages/pigeon
 @file:Suppress("UNCHECKED_CAST", "ArrayInDataClass")
 
-package com.simplezen.unify_messages_plus.src
+package io.simplezen.simple_sms
 
 import android.util.Log
 import io.flutter.plugin.common.BasicMessageChannel
@@ -47,29 +47,13 @@ class FlutterError (
   val details: Any? = null
 ) : Throwable()
 
-/**
- *
- * This file generates all methods required for handling host comms and is the home to a number of special pigeons.
- *
- * Inbound Pigeons:
- * [HomingPigeon] carries text messages from the host to Flutter.
- *
- * Outbound Pigeons:
- * [TextingPigeon] carries text messages from Flutter to the Host.
- * [CuriousPigeon] carries queries to the host for local SMS, Contacts, Profile, and Device Information.
- * [SecretAgentPigeon] carries permissions requests and queries to the host.
- * [KamikazeePigeon] carries destructive actions to the host.
- *
- *
- * Generated class from Pigeon that represents data sent in messages.
- */
 data class BinaryData (
   val data: List<Long>
 )
  {
   companion object {
-    fun fromList(pigeonVar_list: List<Any?>): BinaryData {
-      val data = pigeonVar_list[0] as List<Long>
+    fun fromList(pigeonVarList: List<Any?>): BinaryData {
+      val data = pigeonVarList[0] as List<Long>
       return BinaryData(data)
     }
   }
@@ -80,7 +64,6 @@ data class BinaryData (
   }
 }
 
-/** Generated class from Pigeon that represents data sent in messages. */
 data class QueryObj (
   val contentUri: String,
   val projection: List<String>? = null,
@@ -90,12 +73,12 @@ data class QueryObj (
 )
  {
   companion object {
-    fun fromList(pigeonVar_list: List<Any?>): QueryObj {
-      val contentUri = pigeonVar_list[0] as String
-      val projection = pigeonVar_list[1] as List<String>?
-      val selection = pigeonVar_list[2] as String?
-      val selectionArgs = pigeonVar_list[3] as List<String>?
-      val sortOrder = pigeonVar_list[4] as String?
+    fun fromList(pigeonVarList: List<Any?>): QueryObj {
+      val contentUri = pigeonVarList[0] as String
+      val projection = pigeonVarList[1] as List<String>?
+      val selection = pigeonVarList[2] as String?
+      val selectionArgs = pigeonVarList[3] as List<String>?
+      val sortOrder = pigeonVarList[4] as String?
       return QueryObj(contentUri, projection, selection, selectionArgs, sortOrder)
     }
   }
@@ -109,6 +92,7 @@ data class QueryObj (
     )
   }
 }
+
 private open class PigeonPigeonCodec : StandardMessageCodec() {
   override fun readValueOfType(type: Byte, buffer: ByteBuffer): Any? {
     return when (type) {

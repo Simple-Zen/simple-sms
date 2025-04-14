@@ -1,4 +1,4 @@
-package io.simplezen.simple_sms.src
+package io.simplezen.simple_sms.inbound_messaging
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -7,7 +7,6 @@ import android.provider.Telephony
 import android.provider.Telephony.Threads.getOrCreateThreadId
 import android.telephony.SmsManager
 import android.util.Log
-import com.simplezen.unify_messages_plus.src.InboundMessaging
 import java.util.Date
 
 // Inbound SMS Messages

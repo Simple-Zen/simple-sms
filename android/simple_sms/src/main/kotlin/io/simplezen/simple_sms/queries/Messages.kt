@@ -1,16 +1,13 @@
-package com.simplezen.unify_messages_plus.src.queries
+package io.simplezen.simple_sms.queries
 
+//import android.provider.Telephony
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import android.os.Build
 import android.provider.ContactsContract
-//import android.provider.Telephony
 import android.provider.Telephony.Mms
-import io.flutter.Log
-import kotlin.collections.hashMapOf
-import kotlin.collections.iterator
 import androidx.core.net.toUri
+import io.flutter.Log
 
 //
 //enum class MessagesFilter {
@@ -181,11 +178,8 @@ fun parseMmsMessage(context: Context, msgMap: Map<String, Any?>): Map<String, An
 
     val msgId = msgMap.getOrDefault("_id", -1).toString()
     val messageUri = "content://mms/part".toUri()
-    val peopleUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+    val peopleUri =
         Mms.Addr.getAddrUriForMessage(msgId)
-    } else {
-        TODO("VERSION.SDK_INT < R")
-    }
 
     printQueryResults("MMS", msgMap)
 

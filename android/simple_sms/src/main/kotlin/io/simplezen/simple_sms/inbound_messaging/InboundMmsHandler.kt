@@ -1,4 +1,4 @@
-package com.simplezen.unify_messages_plus.src
+package io.simplezen.simple_sms.inbound_messaging
 
 import android.app.Activity
 import android.content.BroadcastReceiver
@@ -11,15 +11,16 @@ import android.database.Cursor
 import android.os.Build
 import android.os.Bundle
 import android.provider.Telephony
+import android.telephony.TelephonyManager
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
-import com.android.messaging.datamodel.action.ReceiveMmsMessageAction
+import io.simplezen.simple_sms.queries.Query
+import io.simplezen.simple_sms.QueryObj
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
+import kotlin.collections.get
 
 // Inbound MMS Messages
 class InboundMmsHandler() : BroadcastReceiver() {
@@ -28,7 +29,6 @@ class InboundMmsHandler() : BroadcastReceiver() {
         const val EXTRA_DATA = "data"
     }
 
-    @RequiresApi(Build.VERSION_CODES.R)
     override fun onReceive(context: Context, intent: Intent) {
         // Log the incoming Intent
         Log.d("IncomingMmsHandler", " <<< Received MMS - $intent")
@@ -49,7 +49,7 @@ class InboundMmsHandler() : BroadcastReceiver() {
 //            Log.w("IncomingMmsHandler", " <<< Received non-MMS message")
 //            return
 //        }
-        val bundle : Bundle = intent.extras!!;
+        val bundle : Bundle = intent.extras!!
 
         val subId: Int = intent.getIntExtra(
             EXTRA_SUBSCRIPTION,
@@ -62,7 +62,7 @@ class InboundMmsHandler() : BroadcastReceiver() {
         action.start()
 
         // Get the TelephonyManager instance from context
-        val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as android.telephony.TelephonyManager
+        val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
         // Check if the device supports SMS
         val smsCapable: Boolean = context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY_MESSAGING)
@@ -438,7 +438,7 @@ class InboundMmsHandler() : BroadcastReceiver() {
 
             // On Android 14+, the provider may have additional delays
             // We need to be less restrictive in our time window
-            val timeFilter = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            val timeFilter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 // More lenient on Android 14+
                 "date >= ?"
             } else {

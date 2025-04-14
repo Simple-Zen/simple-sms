@@ -1,4 +1,4 @@
-package com.simplezen.unify_messages_plus.src.device_actions
+package io.simplezen.simple_sms.device_actions
 
 import android.Manifest
 import android.app.Activity
@@ -7,8 +7,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -17,16 +15,15 @@ import androidx.core.content.LocusIdCompat
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
-import com.simplezen.unify_messages_plus.MainActivity
-import com.simplezen.unify_messages_plus.R
 import io.flutter.Log
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import io.simplezen.simple_sms.MainActivity
+import io.simplezen.simple_sms.R
 
 class Notification(val context: Context, private val activity: Activity) : MethodCallHandler {
 
-        @RequiresApi(Build.VERSION_CODES.R)
         fun createConversationNotificationChannel(context: Context) {
                 // Define the channel ID and name
                 val channelId = "conversation_channel_id"
@@ -90,7 +87,7 @@ class Notification(val context: Context, private val activity: Activity) : Metho
                                 .setIcon(
                                         IconCompat.createWithResource(
                                                 context,
-                                                R.drawable.launch_icon
+                                                R.drawable.launch_icon // Replace with your icon
                                         )
                                 ) // Replace with your icon
                                 .setIntent(

@@ -1,10 +1,10 @@
-package com.simplezen.unify_messages_plus.src
+package io.simplezen.simple_sms.inbound_messaging
 
 import android.content.Context
-import com.simplezen.unify_messages_plus.MainActivity
 import io.flutter.Log
+import io.simplezen.simple_sms.IncomingPigeon
+import io.simplezen.simple_sms.MainActivity
 
-// HomingPigeon
 class InboundMessaging(val context: Context) {
     private var incomingPigeon: IncomingPigeon? = null
 

@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.google.messaging"
+    namespace = "com.android.providers.telephony"
     compileSdk = 35
     buildToolsVersion = "36.0.0"
     ndkVersion = "28.0.13004108"
@@ -43,9 +43,6 @@ android {
     }
 }
 dependencies {
-    implementation(project(":google_apps_messaging_core"))
-//    implementation(project(":TelephonyProvider"))
-
     implementation(libs.androidx.exifinterface)
 
     // Kotlin

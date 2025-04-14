@@ -1,4 +1,4 @@
-package com.simplezen.unify_messages_plus.src.device_actions
+package io.simplezen.simple_sms.device_actions
 
 import android.app.role.RoleManager
 import android.content.Context
@@ -7,8 +7,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import com.simplezen.unify_messages_plus.MainActivity
 import io.flutter.embedding.android.FlutterFragmentActivity
+import io.simplezen.simple_sms.MainActivity
 
 class PermissionsHandler(val context: Context) : FlutterFragmentActivity() {
 

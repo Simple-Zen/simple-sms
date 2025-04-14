@@ -1,13 +1,15 @@
-package io.simplezen.simple_sms.src.device_actions
+package io.simplezen.simple_sms.device_actions
+
+import android.content.Context
 
 // KamikazeePigeon
-class DestructiveActions(val context: Context) : KamikazeePigeon {
+class DestructiveActions(val context: Context) {
 
-    override fun deleteMessage(lookupId: String): Boolean {
+    fun deleteMessage(lookupId: String): Boolean {
         throw Exception("Not implemented")
     }
 
-    override fun deleteContact(lookupId: String): Boolean {
+    fun deleteContact(lookupId: String): Boolean {
         throw Exception("Not implemented")
     }
 }

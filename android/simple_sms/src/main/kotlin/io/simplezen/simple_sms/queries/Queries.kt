@@ -1,4 +1,4 @@
-package com.simplezen.unify_messages_plus.src
+package io.simplezen.simple_sms.queries
 
 import android.Manifest
 import android.content.Context
@@ -13,7 +13,9 @@ import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
 import androidx.core.net.toUri
 import androidx.core.telephony.TelephonyManagerCompat
-import com.simplezen.unify_messages_plus.MainActivity.Companion.requestPermissions
+import io.simplezen.simple_sms.CuriousPigeon
+import io.simplezen.simple_sms.MainActivity
+import io.simplezen.simple_sms.QueryObj
 
 // CuriousPigeon
 class Query(val context: Context) : CuriousPigeon {
@@ -78,7 +80,7 @@ class Query(val context: Context) : CuriousPigeon {
                             //                                          int[] grantResults)
                             // to handle the case where the user grants the permission. See the documentation
                             // for ActivityCompat#requestPermissions for more details.
-                            requestPermissions(
+                            MainActivity.requestPermissions(
                                 arrayOf(Manifest.permission.READ_PHONE_NUMBERS)
                             )
                         }

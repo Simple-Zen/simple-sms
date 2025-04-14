@@ -1,10 +1,7 @@
-package com.simplezen.unify_messages_plus.src.telephony
+package io.simplezen.simple_sms.telephony
 
-import android.annotation.TargetApi
 import android.content.Context
-import android.os.Build
 import android.telephony.TelephonyManager
-import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import java.lang.reflect.InvocationTargetException
 

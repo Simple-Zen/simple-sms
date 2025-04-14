@@ -16,7 +16,6 @@ pluginManagement {
             flutterSdkPath
         }
 
-//    includeBuild("Messaging")
     includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
 
     repositories {
@@ -35,6 +34,15 @@ pluginManagement {
 }
 
 buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.7.3")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.20")
+    }
+
     dependencyLocking {
         lockFile = file("${rootProject.projectDir}/buildscript-gradle.lockfile")
         lockAllConfigurations()
@@ -45,14 +53,14 @@ plugins {
     id("dev.flutter.flutter-plugin-loader") version "1.0.0"
     id("com.android.application") version "8.7.3" apply false
     id("com.android.library") version "8.7.3" apply false
-    id("org.jetbrains.kotlin.android") version "1.8.22" apply false
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
+    id("org.jetbrains.kotlin.android") version "2.1.20" apply false
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.9.0"
 }
 
 include(":simple_sms")
-include(":Messaging")
-include(":TelephonyProvider")
+include(":google_apps_messaging_core")
+include(":google_provider_telephony_core")
 
 project(":simple_sms").projectDir = file("./simple_sms")
-project(":Messaging").projectDir = file("./Messaging")
-project(":TelephonyProvider").projectDir = file("./TelephonyProvider")
+project(":google_apps_messaging_core").projectDir = file("./google_apps_messaging_core")
+project(":google_provider_telephony_core").projectDir = file("./google_provider_telephony_core")

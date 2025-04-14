@@ -6,12 +6,13 @@ plugins {
     id("com.android.application")
     id("dev.flutter.flutter-gradle-plugin")
     id("org.jetbrains.kotlin.android")
-
 }
 
 android {
     namespace = "io.simplezen.simple_sms"
     compileSdk = 35
+    buildToolsVersion = "36.0.0"
+    ndkVersion = "28.0.13004108"
 
     // Flutter's CI installs the NDK at a non-standard path.
     // This non-standard structure is initially created by
@@ -43,16 +44,38 @@ android {
         }
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
-    buildToolsVersion = "36.0.0"
-    ndkVersion = "28.0.13004108"
 }
 dependencies {
-    implementation(libs.messaging)
+    implementation(project(":google_apps_messaging_core"))
+    implementation(project(":google_provider_telephony_core"))
+
+    implementation(libs.androidx.exifinterface)
+
+    // Kotlin
     implementation(libs.androidx.core.ktx)
-    implementation(project(":Messaging"))
-    implementation(project(":TelephonyProvider"))
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.fragment.ktx)
+
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.appcompat.resources)
+    implementation(libs.material)
+
+    // Role Manager
+    implementation(libs.androidx.core.role)
+
+    // Work Manager
+    implementation(libs.androidx.concurrent.futures)
+    implementation(libs.guava)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.work.rxjava2)
+    implementation(libs.androidx.work.gcm)
+    implementation(libs.androidx.work.multiprocess)
+    androidTestImplementation(libs.androidx.work.testing)
+
+    // Apache Commons Codec
+    implementation(libs.commons.codec)
 }
 
 flutter {

@@ -1,24 +1,35 @@
-package io.simplezen.simple_sms.src.device_actions
+package io.simplezen.simple_sms.device_actions
+
+import android.content.Context
+import android.provider.Telephony.Mms
+import androidx.core.net.toUri
+import io.simplezen.simple_sms.BinaryData
+import io.simplezen.simple_sms.outbound_messaging.OutboundMessagingHandler
+import io.flutter.Log
+import io.simplezen.simple_sms.MainActivity
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 
 // SargentPigeon
-class DeviceActions(val context: Context) : SargentPigeon {
-    override fun getSendStatus(messageId: String): String {
+class DeviceActions(val context: Context)  {
+     fun getSendStatus(messageId: String): String {
         throw Exception("Not implemented")
     }
 
-    override fun checkPermissions(permissions: List<String>): Map<String, Boolean> {
+     fun checkPermissions(permissions: List<String>): Map<String, Boolean> {
         return MainActivity.Companion.checkPermissions(context, permissions.toTypedArray())
     }
 
-    override fun requestPermissions(permissions: List<String>): Map<String, Boolean> {
+     fun requestPermissions(permissions: List<String>): Map<String, Boolean> {
         return MainActivity.Companion.requestPermissions(permissions.toTypedArray())
     }
 
-    override fun sendNotification(): Boolean {
+     fun sendNotification(): Boolean {
         TODO("Not yet implemented")
     }
 
-    override fun checkRole(role: String): Boolean {
+     fun checkRole(role: String): Boolean {
         return if (role.isEmpty()) {
             true
         } else {
@@ -26,7 +37,7 @@ class DeviceActions(val context: Context) : SargentPigeon {
         }
     }
 
-    override fun requestRole(role: String): Boolean {
+     fun requestRole(role: String): Boolean {
         return if (role.isEmpty()) {
             true
         } else {
@@ -34,12 +45,12 @@ class DeviceActions(val context: Context) : SargentPigeon {
         }
     }
 
-    override fun sendMessage(message: Map<String, Any?>): String {
+     fun sendMessage(message: Map<String, Any?>): String {
         return OutboundMessagingHandler().sendSms(context, message)
     }
 
     // New method to load MMS attachment content
-    override fun loadMmsAttachment(contentUri: String): BinaryData? {
+     fun loadMmsAttachment(contentUri: String): BinaryData? {
         try {
             val uri = contentUri.toUri()
             context.contentResolver.openInputStream(uri)?.use { inputStream ->
@@ -60,7 +71,7 @@ class DeviceActions(val context: Context) : SargentPigeon {
     }
 
     // New method to save MMS attachment to a temporary file
-    override fun saveMmsAttachmentToFile(contentUri: String): String? {
+     fun saveMmsAttachmentToFile(contentUri: String): String? {
         try {
             val uri = contentUri.toUri()
             val fileName = "mms_${System.currentTimeMillis()}"

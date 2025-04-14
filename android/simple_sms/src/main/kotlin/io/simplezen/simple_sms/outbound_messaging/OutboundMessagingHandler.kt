@@ -1,4 +1,4 @@
-package com.simplezen.unify_messages_plus.src.outbound_messaging
+package io.simplezen.simple_sms.outbound_messaging
 
 import android.app.PendingIntent
 import android.app.Service
@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.IBinder
 import android.telephony.SmsManager
 import android.widget.Toast
@@ -17,8 +16,7 @@ import java.util.UUID
 
 class OutboundMessagingHandler() : Service() {
 
-    companion object {
-    }
+    companion object;
 
     // Ensure the device has a SIM card, otherwise return empty
     fun sendSms(context : Context, message: Map<String, Any?>): String {
@@ -92,16 +90,14 @@ private class PrivOutboundMessagingHandler(val context: Context) {
         // }
 
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                smsManager.sendTextMessage(
-                        address,
-                        null,
-                        body,
-                        sentPendingIntent,
-                        deliveredPendingIntent,
-                        tempId.toLong()
-                )
-            }
+            smsManager.sendTextMessage(
+                    address,
+                    null,
+                    body,
+                    sentPendingIntent,
+                    deliveredPendingIntent,
+                    tempId.toLong()
+            )
             Toast.makeText(context, "Message Sent", Toast.LENGTH_LONG).show()
             return ""
         } catch (e: Exception) {

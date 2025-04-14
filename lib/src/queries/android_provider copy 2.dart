@@ -1,5 +1,6 @@
 import 'dart:core';
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 
 // Flutter
 import 'package:flutter/services.dart';
@@ -94,7 +95,7 @@ class AndroidProvider {
   /// Provides a way to debug MMS attachments by logging details of MMS parts
   static Future<void> debugMmsAttachments() async {
     try {
-      print('Debugging MMS attachments...');
+      debugPrint('Debugging MMS attachments...');
 
       // Query all MMS messages
       final mmsMessages = await CuriousPigeon().query(
@@ -105,13 +106,13 @@ class AndroidProvider {
         ),
       );
 
-      print('Found ${mmsMessages.length} MMS messages');
+      debugPrint('Found ${mmsMessages.length} MMS messages');
 
       // For each MMS message, query its parts
       for (final mmsMessage in mmsMessages.take(5)) {
         // Limit to the first 5 messages for brevity
         final messageId = mmsMessage['_id'].toString();
-        print('\nMMS Message ID: $messageId');
+        debugPrint('\nMMS Message ID: $messageId');
 
         // Query parts for this message
         final parts = await CuriousPigeon().query(
@@ -124,7 +125,7 @@ class AndroidProvider {
           ),
         );
 
-        print('  Found ${parts.length} parts for message $messageId');
+        debugPrint('  Found ${parts.length} parts for message $messageId');
 
         // Log details of each part
         for (final part in parts) {
@@ -134,28 +135,28 @@ class AndroidProvider {
           final name = partMap['name'] as String? ?? 'unnamed';
           final text = partMap['text'] as String? ?? '';
 
-          print('  Part ID: $partId');
-          print('    Content Type: $contentType');
-          print('    Name: $name');
+          debugPrint('  Part ID: $partId');
+          debugPrint('    Content Type: $contentType');
+          debugPrint('    Name: $name');
           if (contentType.startsWith('text/')) {
-            print(
+            debugPrint(
               '    Text: ${text.length > 30 ? "${text.substring(0, 30)}..." : text}',
             );
           } else {
-            print('    Binary content (${contentType})');
+            debugPrint('    Binary content (${contentType})');
           }
 
           // For non-text parts, try to get content URI information
           if (!contentType.startsWith('text/')) {
             final uri = 'content://mms/part/$partId';
-            print('    Access URI: $uri');
+            debugPrint('    Access URI: $uri');
           }
         }
       }
 
-      print('\nMMS attachment debugging complete');
+      debugPrint('\nMMS attachment debugging complete');
     } catch (e) {
-      print('Error debugging MMS attachments: $e');
+      debugPrint('Error debugging MMS attachments: $e');
     }
   }
 }
@@ -191,7 +192,7 @@ class _AndroidQueries implements AndroidQueries {
   /// Get device information
   @override
   Future<DevicesCompanion> deviceInfo([bool overrideSync = false]) async {
-    print('Getting device info');
+    debugPrint('Getting device info');
     final DevicesCompanion device = await AndroidDeviceProvider().query();
 
     return overrideSync == true || sync == true
@@ -204,7 +205,7 @@ class _AndroidQueries implements AndroidQueries {
   Future<List<SimCardsCompanion>> deviceSimCards([
     bool overrideSync = false,
   ]) async {
-    print('Getting SIM cards from device info');
+    debugPrint('Getting SIM cards from device info');
     final deviceId = (await deviceInfo(true)).id.value;
 
     // Get the device info which contains SIM card information
@@ -212,7 +213,7 @@ class _AndroidQueries implements AndroidQueries {
     try {
       device = await CuriousPigeon().getDeviceInfo();
     } catch (e) {
-      print('Error getting device info for SIM cards: $e');
+      debugPrint('Error getting device info for SIM cards: $e');
       return []; // Return empty list if we can't get device info
     }
 
@@ -226,7 +227,7 @@ class _AndroidQueries implements AndroidQueries {
       }
     }
 
-    print('Found ${simCardsData.length} SIM cards in device info');
+    debugPrint('Found ${simCardsData.length} SIM cards in device info');
 
     // Process SIM cards and convert to SimCardsCompanion objects
     final List<SimCardsCompanion> simCards = AndroidDeviceProvider()
@@ -235,7 +236,7 @@ class _AndroidQueries implements AndroidQueries {
     final finalSimCards = <SimCardsCompanion>[];
     for (var sim in simCards) {
       // Print the SIM card info for debugging
-      print(
+      debugPrint(
         'Processing SIM card: slot=${sim.slot.value}, ' +
             'phoneNumber=${sim.phoneNumber.value}, ' +
             'imei=${sim.imei.value}',
@@ -248,9 +249,9 @@ class _AndroidQueries implements AndroidQueries {
         try {
           final result = await db.simCardsDao.upsert(simWithDevice);
           finalSimCards.add(result.toCompanion(false));
-          print('Successfully saved SIM card to database');
+          debugPrint('Successfully saved SIM card to database');
         } catch (e) {
-          print('Error upserting SIM card: $e');
+          debugPrint('Error upserting SIM card: $e');
           finalSimCards.add(simWithDevice);
         }
       } else {
@@ -283,7 +284,7 @@ class _AndroidQueries implements AndroidQueries {
   Future<List<ConversationsCompanion>> allConversations([
     bool overrideSync = false,
   ]) async {
-    print('Getting all conversations');
+    debugPrint('Getting all conversations');
     final List<ConversationsCompanion> conversations =
         await AndroidConversationProvider.simpleConversations.query();
 
@@ -302,7 +303,7 @@ class _AndroidQueries implements AndroidQueries {
   Future<List<ConversationContactsCompanion>> allConversationContacts([
     bool overrideSync = false,
   ]) async {
-    print('Getting all conversation contacts');
+    debugPrint('Getting all conversation contacts');
     // Valid IDs are required to pair the conversation with the conversation contact
 
     final people = await allPeople(true);
@@ -312,7 +313,7 @@ class _AndroidQueries implements AndroidQueries {
 
     // Get the device's phone number(s) to exclude the owner from conversation contacts
     final Set<String> devicePhoneNumbers = await _getDeviceOwnerPhoneNumbers();
-    print('Device phone numbers: $devicePhoneNumbers');
+    debugPrint('Device phone numbers: $devicePhoneNumbers');
 
     // Link messages to Contacts
     final provider = AndroidContactProvider(
@@ -368,7 +369,7 @@ class _AndroidQueries implements AndroidQueries {
             recipient.value,
           );
           if (devicePhoneNumbers.contains(normalizedRecipientPhone)) {
-            // print('Skipping device owner as recipient: ${recipient.value}');
+            // debugPrint('Skipping device owner as recipient: ${recipient.value}');
             continue;
           }
 
@@ -451,7 +452,7 @@ class _AndroidQueries implements AndroidQueries {
                 final phoneNumber = sim[field].toString().trim();
                 if (phoneNumber.isNotEmpty) {
                   phoneNumbers.add(_normalizePhoneNumber(phoneNumber));
-                  print('Added phone number from SIM card: $phoneNumber');
+                  debugPrint('Added phone number from SIM card: $phoneNumber');
                 }
               }
             }
@@ -465,7 +466,7 @@ class _AndroidQueries implements AndroidQueries {
         // Check phoneNumber field first
         if (sim.phoneNumber != null && sim.phoneNumber!.isNotEmpty) {
           phoneNumbers.add(_normalizePhoneNumber(sim.phoneNumber!));
-          print('Added phone number from SimCard DB: ${sim.phoneNumber}');
+          debugPrint('Added phone number from SimCard DB: ${sim.phoneNumber}');
         }
         // Fallback to serialNumber if needed
         else if (sim.serialNumber.isNotEmpty && sim.serialNumber != 'UNKNOWN') {
@@ -495,8 +496,8 @@ class _AndroidQueries implements AndroidQueries {
         }
       }
     } catch (e, stackTrace) {
-      print('Error getting device owner phone numbers: $e');
-      print(stackTrace.toString());
+      debugPrint('Error getting device owner phone numbers: $e');
+      debugPrint(stackTrace.toString());
     }
 
     return phoneNumbers;
@@ -524,7 +525,7 @@ class _AndroidQueries implements AndroidQueries {
     String? address,
     bool? overrideSync = false,
   }) async {
-    print('Getting all messages');
+    debugPrint('Getting all messages');
     final conversations = await allConversations();
 
     // Get all messages directly
@@ -532,7 +533,7 @@ class _AndroidQueries implements AndroidQueries {
     final allSmsMessages = await AndroidSmsProvider.sms.query();
     final allMessages = [...allMmsMessages, ...allSmsMessages];
 
-    print("All direct messages: ${allMessages.length}");
+    debugPrint("All direct messages: ${allMessages.length}");
 
     // Link all messages to their conversation id
     List<MessagesCompanion> linkedMessages = [];
@@ -559,7 +560,7 @@ class _AndroidQueries implements AndroidQueries {
   /// Get all people from the device
   @override
   Future<List<PeopleCompanion>> allPeople([bool overrideSync = false]) async {
-    print('Getting all people');
+    debugPrint('Getting all people');
     final people = await AndroidPersonProvider.contactables.query();
     final updatedPeople = <PeopleCompanion>[];
     for (var person in people) {
@@ -577,7 +578,7 @@ class _AndroidQueries implements AndroidQueries {
   Future<List<ContactsCompanion>> allContacts([
     bool overrideSync = false,
   ]) async {
-    print('Getting all contacts');
+    debugPrint('Getting all contacts');
     final people = await allPeople();
     final provider = AndroidContactProvider(
       AndroidContactProviderType.contactables,
@@ -608,7 +609,7 @@ class _AndroidQueries implements AndroidQueries {
   Future<List<ContactsCompanion>> allContactsFromMessages([
     bool overrideSync = false,
   ]) async {
-    print('Getting all contacts from messages');
+    debugPrint('Getting all contacts from messages');
     final messages = await allMessages(overrideSync: true);
 
     final provider = AndroidContactProvider(
@@ -621,8 +622,8 @@ class _AndroidQueries implements AndroidQueries {
     for (final message in messages) {
       finalContacts.addAll(await provider.query(message.externalId.value));
       i++;
-      print("Processed $i messages");
-      print("Contacts: ${finalContacts.length}");
+      debugPrint("Processed $i messages");
+      debugPrint("Contacts: ${finalContacts.length}");
     }
     return finalContacts;
   }
@@ -644,7 +645,7 @@ class _AndroidCommands implements AndroidCommands {
   /// Get the send status of a message
   @override
   Future<MessageStatus> fetchSendStatus({required String lookupId}) async {
-    print('Fetching send status');
+    debugPrint('Fetching send status');
     final messages = await AndroidMmsProvider.mms.query();
     return messages
         .firstWhere((m) => m.externalId.value == lookupId)
@@ -655,7 +656,7 @@ class _AndroidCommands implements AndroidCommands {
   /// Remove an SMS from a SIM card
   @override
   Future<bool?> removeSmsFromSim(int id, int threadId) async {
-    print('Removing SMS from SIM');
+    debugPrint('Removing SMS from SIM');
     MethodChannel channel = MethodChannel("simplezen.sms.remove.channel");
 
     Map arguments = {};
@@ -684,7 +685,7 @@ class _AndroidCommands implements AndroidCommands {
     required String body,
     List<AttachmentsCompanion>? attachments,
   }) async {
-    print('Sending message');
+    debugPrint('Sending message');
     final messageId = DateTime.now().millisecondsSinceEpoch.toString();
 
     final message = AndroidMms(
@@ -749,7 +750,7 @@ class _AndroidCommands implements AndroidCommands {
 
   /// Send a notification
   Future<bool> sendNotification({required title, required body}) async {
-    print('Sending notification');
+    debugPrint('Sending notification');
     return _sargentPigeon.sendNotification();
   }
 }
@@ -765,21 +766,21 @@ class _AndroidDestructiveCommands implements AndroidDestructiveCommands {
   /// Delete an entire thread
   @override
   Future<bool> deleteThread(String threadId) async {
-    print('Deleting thread');
+    debugPrint('Deleting thread');
     return throw UnimplementedError();
   }
 
   /// Delete a single contact
   @override
   Future<bool> deleteContact({required String lookupId}) async {
-    print('Deleting contact');
+    debugPrint('Deleting contact');
     return await _kamikazeePigeon.deleteContact(lookupId);
   }
 
   /// Delete a single message
   @override
   Future<bool> deleteMessage({required String lookupId}) async {
-    print('Deleting message');
+    debugPrint('Deleting message');
     return await _kamikazeePigeon.deleteMessage(lookupId);
   }
 }
@@ -804,7 +805,7 @@ class _AndroidPermissions implements AndroidPermissions {
   /// Check if the app has the necessary role for the given intent
   @override
   Future<bool> fetchRole({required Intention intent}) async {
-    print('Fetching role');
+    debugPrint('Fetching role');
     return await _sargentPigeon.checkRole(intent.role ?? '');
   }
 
@@ -813,14 +814,14 @@ class _AndroidPermissions implements AndroidPermissions {
   Future<Map<String, bool>> fetchPermissions({
     required Intention intent,
   }) async {
-    print('Fetching permissions');
+    debugPrint('Fetching permissions');
     return await _sargentPigeon.checkPermissions(intent.permissions);
   }
 
   /// Check if the app has the necessary role and permissions for the given intent
   @override
   Future<bool> fetchFullAuth({required Intention intent}) async {
-    print('Fetching full auth');
+    debugPrint('Fetching full auth');
     final roleAuthorized = await fetchRole(intent: intent);
     final permissionsAuthorized = await fetchPermissions(intent: intent);
     return roleAuthorized &&
@@ -829,13 +830,13 @@ class _AndroidPermissions implements AndroidPermissions {
 
   /// Request the necessary role for the given intent
   Future<bool> requestRole({required Intention intent}) async {
-    print('Requesting role');
+    debugPrint('Requesting role');
     return await _sargentPigeon.requestRole(intent.role ?? '');
   }
 
   /// Request the necessary role and permissions for the given intent
   Future<bool> requestFullAuth({required Intention intent}) async {
-    print('Requesting full auth');
+    debugPrint('Requesting full auth');
     final bool roleAuthorized = await requestRole(intent: intent);
     final Map<String, bool> permissionsAuthorized = await requestPermissions(
       intent: intent,
@@ -853,13 +854,13 @@ class InboundMessaging implements IncomingPigeon {
   Future<bool> receiveInboundMessage(
     Map<String, dynamic> inboundMessage,
   ) async {
-    print('Received Message: ${inboundMessage['body']}');
+    debugPrint('Received Message: ${inboundMessage['body']}');
 
     String? messageId;
 
     if (inboundMessage["message_type"] == "sms") {
       AndroidSms message = AndroidSms.fromJson(inboundMessage);
-      print('Message: $message');
+      debugPrint('Message: $message');
 
       message.conversationId =
           (await (db.conversations.select()..where(

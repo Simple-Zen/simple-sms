@@ -1,5 +1,5 @@
 import 'package:simple_sms/src/models/query_obj.dart';
-
+import 'package:flutter/foundation.dart';
 
 class AndroidDeviceProvider {
   AndroidDeviceProvider();
@@ -47,12 +47,12 @@ class _DeviceFields {
 
 extension AndroidDeviceDriftConversion on AndroidDeviceProvider {
   DevicesCompanion toDriftCompanion(AndroidDevice device) => DevicesCompanion(
-        externalId: Value(device.externalId),
-        externalParentId: Value(device.externalParentId),
-        brand: Value(device.brand),
-        model: Value(device.model),
-        os: Value(device.os),
-      );
+    externalId: Value(device.externalId),
+    externalParentId: Value(device.externalParentId),
+    brand: Value(device.brand),
+    model: Value(device.model),
+    os: Value(device.os),
+  );
 
   DevicesCompanion toDriftFromJson(Map<String, dynamic> json) {
     return DevicesCompanion(
@@ -67,21 +67,22 @@ extension AndroidDeviceDriftConversion on AndroidDeviceProvider {
 
 extension AndroidDeviceJsonConversion on AndroidDeviceProvider {
   Map<String, dynamic> toJson(AndroidDevice device) => {
-        provider.externalId: device.externalId,
-        provider.externalParentId: device.externalParentId,
-        provider.brand: device.brand,
-        provider.model: device.model,
-        provider.os: device.os,
-        'simCards': device.simCards,
-      };
+    provider.externalId: device.externalId,
+    provider.externalParentId: device.externalParentId,
+    provider.brand: device.brand,
+    provider.model: device.model,
+    provider.os: device.os,
+    'simCards': device.simCards,
+  };
 
   AndroidDevice fromJson(Map<String, dynamic> json) {
     // Extract sim cards if present
     List<Map<String, dynamic>> simCards = [];
     if (json.containsKey('sims') && json['sims'] is List) {
-      simCards = (json['sims'] as List)
-          .map((sim) => Map<String, dynamic>.from(sim))
-          .toList();
+      simCards =
+          (json['sims'] as List)
+              .map((sim) => Map<String, dynamic>.from(sim))
+              .toList();
     }
 
     return AndroidDevice(
@@ -97,17 +98,24 @@ extension AndroidDeviceJsonConversion on AndroidDeviceProvider {
 
 extension SimCardConversion on AndroidDeviceProvider {
   List<SimCardsCompanion> simCardsToDriftCompanions(
-      String deviceId, List<Map<String, dynamic>> simCardsJson) {
+    String deviceId,
+    List<Map<String, dynamic>> simCardsJson,
+  ) {
     return simCardsJson.map((simJson) {
       return SimCardsCompanion(
         deviceId: Value(deviceId),
-        slot: Value(simJson['slot'] is int
-            ? simJson['slot']
-            : int.tryParse(simJson['slot']?.toString() ?? '0') ?? -1),
-        isNetworkRoaming: Value(simJson['isNetworkRoaming'] == true ||
-            simJson['isNetworkRoaming'] == 'true'),
-        state:
-            Value(parseSimCardState(simJson['state']?.toString() ?? 'UNKNOWN')),
+        slot: Value(
+          simJson['slot'] is int
+              ? simJson['slot']
+              : int.tryParse(simJson['slot']?.toString() ?? '0') ?? -1,
+        ),
+        isNetworkRoaming: Value(
+          simJson['isNetworkRoaming'] == true ||
+              simJson['isNetworkRoaming'] == 'true',
+        ),
+        state: Value(
+          parseSimCardState(simJson['state']?.toString() ?? 'UNKNOWN'),
+        ),
         operatorName: Value(simJson['operatorName']?.toString() ?? 'UNKNOWN'),
         countryIso: Value(simJson['countryIso']?.toString() ?? 'UNKNOWN'),
         serialNumber: Value(simJson['serialNumber']?.toString() ?? 'UNKNOWN'),
@@ -153,14 +161,14 @@ extension AndroidDeviceQueries on AndroidDeviceProvider {
       device = await CuriousPigeon().getDeviceInfo();
       device['external_id'] = await FirebaseInstallations.instance.getId();
     } catch (e) {
-      print('Error getting device info: $e');
+      debugPrint('Error getting device info: $e');
       // Provide fallback values for device information
       device = {
         'brand': 'Unknown',
         'model': 'Unknown',
         'os': 'Unknown',
         'external_id': await FirebaseInstallations.instance.getId(),
-        'sims': []
+        'sims': [],
       };
     }
 
@@ -174,7 +182,7 @@ extension AndroidDeviceQueries on AndroidDeviceProvider {
     try {
       device = await CuriousPigeon().getDeviceInfo();
     } catch (e) {
-      print('Error getting device info for SIM cards: $e');
+      debugPrint('Error getting device info for SIM cards: $e');
       return []; // Return empty list if we can't get device info
     }
 

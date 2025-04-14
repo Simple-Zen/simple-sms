@@ -1,16 +1,9 @@
 import 'package:simple_sms/src/models/query_obj.dart';
-
+import 'package:flutter/foundation.dart';
 
 enum AndroidMmsProvider implements EnumProvider {
-  mms(
-    contentUri: 'content://mms/',
-    projection: [],
-  ),
-  mmsParts(
-    contentUri: 'content://mms/part/',
-    projection: [],
-  ),
-  ;
+  mms(contentUri: 'content://mms/', projection: []),
+  mmsParts(contentUri: 'content://mms/part/', projection: []);
 
   const AndroidMmsProvider({
     required this.contentUri,
@@ -25,25 +18,29 @@ enum AndroidMmsProvider implements EnumProvider {
     final uuid = const Uuid();
 
     final allParts = await queryParts(null);
-    final messages = await CuriousPigeon().query(queryObj ??
-        QueryObj(
-          contentUri: contentUri,
-          sortOrder: 'date ASC',
-          projection: projection,
-        ));
+    final messages = await CuriousPigeon().query(
+      queryObj ??
+          QueryObj(
+            contentUri: contentUri,
+            sortOrder: 'date ASC',
+            projection: projection,
+          ),
+    );
 
     for (final message in messages) {
-      AndroidMms androidMms =
-          AndroidMms.fromJson(Map<String, dynamic>.from(message));
+      AndroidMms androidMms = AndroidMms.fromJson(
+        Map<String, dynamic>.from(message),
+      );
 
       final List<AndroidMmsParts> parts = allParts[androidMms.externalId] ?? [];
       final List<AttachmentsCompanion> attachments = [];
 
       for (final part in parts) {
         final contentType = part.contentType.split('/')[0];
-        final contentSubType = part.contentType.contains('/')
-            ? part.contentType.split('/')[1]
-            : '';
+        final contentSubType =
+            part.contentType.contains('/')
+                ? part.contentType.split('/')[1]
+                : '';
 
         switch (contentType) {
           case 'text':
@@ -63,13 +60,14 @@ enum AndroidMmsProvider implements EnumProvider {
               // Format: content://mms/part/{part_id}
               final String path = 'content://mms/part/${part.externalId}';
 
-              // print('Creating MMS attachment: ${part.contentType} at $path');
+              // debugPrint('Creating MMS attachment: ${part.contentType} at $path');
 
               attachments.add(
                 AttachmentsCompanion(
                   id: Value(attachmentId),
-                  messageId:
-                      Value(''), // Will be updated after message is saved
+                  messageId: Value(
+                    '',
+                  ), // Will be updated after message is saved
                   path: Value(path),
                   mimeType: Value(part.contentType),
                 ),
@@ -88,16 +86,17 @@ enum AndroidMmsProvider implements EnumProvider {
           // First ensure the message is in the database to get its ID
           final message = await db.messagesDao.upsert(companionToAdd);
 
-          // print(
+          // debugPrint(
           //     'Saving ${attachments.length} attachments for message: ${message.id}');
 
           // Now add all attachments with the proper message ID
           for (var attachment in attachments) {
-            await db.attachmentsDao
-                .upsert(attachment.copyWith(messageId: Value(message.id)));
+            await db.attachmentsDao.upsert(
+              attachment.copyWith(messageId: Value(message.id)),
+            );
           }
         } catch (e) {
-          print('Error saving MMS attachments: $e');
+          debugPrint('Error saving MMS attachments: $e');
         }
       }
     }
@@ -105,21 +104,25 @@ enum AndroidMmsProvider implements EnumProvider {
   }
 
   Future<Map<String, List<AndroidMmsParts>>> queryParts(
-      String? lookupKey) async {
+    String? lookupKey,
+  ) async {
     final partMap = <String, List<AndroidMmsParts>>{};
-    final parts = await CuriousPigeon().query(QueryObj(
-      contentUri: AndroidMmsProvider.mmsParts.contentUri,
-      sortOrder: 'mid ASC, name ASC',
-      projection: AndroidMmsProvider.mmsParts.projection,
-    ));
+    final parts = await CuriousPigeon().query(
+      QueryObj(
+        contentUri: AndroidMmsProvider.mmsParts.contentUri,
+        sortOrder: 'mid ASC, name ASC',
+        projection: AndroidMmsProvider.mmsParts.projection,
+      ),
+    );
 
-    // print('Found ${parts.length} MMS parts');
+    // debugPrint('Found ${parts.length} MMS parts');
 
     for (final part in parts) {
-      AndroidMmsParts androidMmsParts =
-          AndroidMmsParts.fromJson(Map<String, dynamic>.from(part));
+      AndroidMmsParts androidMmsParts = AndroidMmsParts.fromJson(
+        Map<String, dynamic>.from(part),
+      );
 
-      // print(
+      // debugPrint(
       //     'MMS part - ID: ${androidMmsParts.externalId}, Type: ${androidMmsParts.contentType}, MsgID: ${androidMmsParts.messageId}');
 
       partMap
@@ -248,58 +251,66 @@ class AndroidMms implements MessageProvider {
   MessageStatus status;
 
   factory AndroidMms.fromJson(Map<String, dynamic> json) => AndroidMms(
-        externalId: json[AndroidMmsFields.externalId].toString(),
-        externalParentId: json[AndroidMmsFields.externalParentId].toString(),
-        contentLink: json[AndroidMmsFields.contentLink],
-        messageType: json[AndroidMmsFields.messageType].toString(),
-        messageBox: json[AndroidMmsFields.messageBox].toString(),
-        priority: json[AndroidMmsFields.priority].toString(),
-        isSeen: json[AndroidMmsFields.isSeen].toString(),
-        spamReport: json[AndroidMmsFields.spamReport].toString(),
-        trId: json[AndroidMmsFields.trId].toString(),
-        body: json[AndroidMmsFields.body] ?? '',
-        simSlot: json[AndroidMmsFields.simSlot].toString(),
-        sentAt: json[AndroidMmsFields.sentAt] > 0
+    externalId: json[AndroidMmsFields.externalId].toString(),
+    externalParentId: json[AndroidMmsFields.externalParentId].toString(),
+    contentLink: json[AndroidMmsFields.contentLink],
+    messageType: json[AndroidMmsFields.messageType].toString(),
+    messageBox: json[AndroidMmsFields.messageBox].toString(),
+    priority: json[AndroidMmsFields.priority].toString(),
+    isSeen: json[AndroidMmsFields.isSeen].toString(),
+    spamReport: json[AndroidMmsFields.spamReport].toString(),
+    trId: json[AndroidMmsFields.trId].toString(),
+    body: json[AndroidMmsFields.body] ?? '',
+    simSlot: json[AndroidMmsFields.simSlot].toString(),
+    sentAt:
+        json[AndroidMmsFields.sentAt] > 0
             ? DateTime.fromMillisecondsSinceEpoch(
-                (json[AndroidMmsFields.sentAt] * 1000))
+              (json[AndroidMmsFields.sentAt] * 1000),
+            )
             : json[AndroidMmsFields.receivedAt] > 0
-                ? DateTime.fromMillisecondsSinceEpoch(
-                    (json[AndroidMmsFields.receivedAt] * 1000))
-                : null,
-        receivedAt: json[AndroidMmsFields.receivedAt] > 0
             ? DateTime.fromMillisecondsSinceEpoch(
-                (json[AndroidMmsFields.receivedAt] * 1000))
+              (json[AndroidMmsFields.receivedAt] * 1000),
+            )
             : null,
-        readAt: json[AndroidMmsFields.read] > 0
+    receivedAt:
+        json[AndroidMmsFields.receivedAt] > 0
             ? DateTime.fromMillisecondsSinceEpoch(
-                (json[AndroidMmsFields.read] * 1000))
+              (json[AndroidMmsFields.receivedAt] * 1000),
+            )
             : null,
-        isRead: json[AndroidMmsFields.isRead],
-        conversationId: json[AndroidMmsFields.externalParentId].toString(),
-        failedAt: null,
-        isOutbound: json[AndroidMmsFields.messageType] == '128' ? true : false,
-        status: json[AndroidMmsFields.messageType] == '128'
+    readAt:
+        json[AndroidMmsFields.read] > 0
+            ? DateTime.fromMillisecondsSinceEpoch(
+              (json[AndroidMmsFields.read] * 1000),
+            )
+            : null,
+    isRead: json[AndroidMmsFields.isRead],
+    conversationId: json[AndroidMmsFields.externalParentId].toString(),
+    failedAt: null,
+    isOutbound: json[AndroidMmsFields.messageType] == '128' ? true : false,
+    status:
+        json[AndroidMmsFields.messageType] == '128'
             ? MessageStatus.sent
             : MessageStatus.received,
-      );
+  );
 
   Map<String, dynamic> toJson() => {
-        AndroidMmsFields.externalId: externalId,
-        AndroidMmsFields.body: body,
-        AndroidMmsFields.messageType: messageType,
-        AndroidMmsFields.messageBox: messageBox,
-        AndroidMmsFields.priority: priority,
-        AndroidMmsFields.isSeen: isSeen,
-        AndroidMmsFields.spamReport: spamReport,
-        AndroidMmsFields.trId: trId,
-        AndroidMmsFields.externalParentId: externalParentId,
-        AndroidMmsFields.simSlot: simSlot,
-        AndroidMmsFields.sentAt: sentAt,
-        AndroidMmsFields.receivedAt: receivedAt,
-        AndroidMmsFields.isRead: isRead,
-        AndroidMmsFields.isOutbound: isOutbound,
-        AndroidMmsFields.status: status,
-      };
+    AndroidMmsFields.externalId: externalId,
+    AndroidMmsFields.body: body,
+    AndroidMmsFields.messageType: messageType,
+    AndroidMmsFields.messageBox: messageBox,
+    AndroidMmsFields.priority: priority,
+    AndroidMmsFields.isSeen: isSeen,
+    AndroidMmsFields.spamReport: spamReport,
+    AndroidMmsFields.trId: trId,
+    AndroidMmsFields.externalParentId: externalParentId,
+    AndroidMmsFields.simSlot: simSlot,
+    AndroidMmsFields.sentAt: sentAt,
+    AndroidMmsFields.receivedAt: receivedAt,
+    AndroidMmsFields.isRead: isRead,
+    AndroidMmsFields.isOutbound: isOutbound,
+    AndroidMmsFields.status: status,
+  };
 
   @override
   MessagesCompanion toDriftCompanion() {
@@ -396,14 +407,14 @@ class AndroidMmsParts {
       );
 
   Map<String, dynamic> toJson() => {
-        AndroidMmsPartsFields.externalId: externalId,
-        AndroidMmsPartsFields.contentDestination: contentDestination,
-        AndroidMmsPartsFields.charSet: charSet,
-        AndroidMmsPartsFields.contentId: contentId,
-        AndroidMmsPartsFields.contentLocation: contentLocation,
-        AndroidMmsPartsFields.contentType: contentType,
-        AndroidMmsPartsFields.messageId: messageId,
-        AndroidMmsPartsFields.name: name,
-        AndroidMmsPartsFields.text: text,
-      };
+    AndroidMmsPartsFields.externalId: externalId,
+    AndroidMmsPartsFields.contentDestination: contentDestination,
+    AndroidMmsPartsFields.charSet: charSet,
+    AndroidMmsPartsFields.contentId: contentId,
+    AndroidMmsPartsFields.contentLocation: contentLocation,
+    AndroidMmsPartsFields.contentType: contentType,
+    AndroidMmsPartsFields.messageId: messageId,
+    AndroidMmsPartsFields.name: name,
+    AndroidMmsPartsFields.text: text,
+  };
 }
